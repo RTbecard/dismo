@@ -9,7 +9,9 @@
 # October 2012
 # Updated with contributions by Sebastien Rochette
 
-gmap <- function(x, exp=1, type='terrain', filename='', style=NULL, scale=1, zoom=NULL, size=c(640, 640), rgb=FALSE, lonlat=FALSE, ...) {
+gmap <- function(x, exp=1, type='terrain', filename='', style=NULL, scale=1,
+                 zoom=NULL, size=c(640, 640), rgb=FALSE, lonlat=FALSE,
+                 googleAPIkey = "", ...) {
 
 	if (! requireNamespace('rgdal') ) { 
 		stop('rgdal not available') 
@@ -140,7 +142,10 @@ gmap <- function(x, exp=1, type='terrain', filename='', style=NULL, scale=1, zoo
 
 		ctr <- paste(center, collapse = ",")
 	
-		gurl <- paste(gurl, "center=", ctr, "&zoom=", zoom, "&size=", s, "&maptype=", type, "&format=gif&sensor=false&scale=", scale, sep = "")
+    gurl <- paste(gurl, "center=", ctr, "&zoom=", zoom, "&size=", s,
+                  "&maptype=", type, "&format=gif&sensor=false&scale=", scale,
+                   sep = "")
+    message("")
 		if (!is.null(style)) {
 			style <- gsub("\\|", "%7C", style)
 			style <- gsub(" ", "", style)
@@ -153,6 +158,8 @@ gmap <- function(x, exp=1, type='terrain', filename='', style=NULL, scale=1, zoo
 		filename <- rasterTmpFile()
 	}
 	extension(filename) <- 'gif'
+  gurl <- paste0(gurl,"&key=", googleAPIkey)
+  message("calling url: ", gurl)
 	download.file(gurl, filename, mode="wb", quiet=TRUE)
     
 	MyMap <- list(lat.center = center[1], lon.center = center[2], zoom = zoom)
